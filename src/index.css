@@ -1,0 +1,218 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --app-primary: #22c55e;
+  --app-accent: #22c55e;
+  --app-panel: #0f172a;
+  --app-panel-alt: #0b1220;
+  --app-text: #f8fafc;
+  --app-muted: #cbd5e1;
+  --app-danger: #dc2626;
+  --app-primary-soft: rgba(34, 197, 94, 0.18);
+  --app-accent-soft: rgba(34, 197, 94, 0.16);
+}
+
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background:
+    radial-gradient(circle at 12% 84%, var(--app-primary-soft), transparent 28%),
+    radial-gradient(circle at 82% 12%, var(--app-accent-soft), transparent 32%),
+    linear-gradient(180deg, #0a1320 0%, #050b14 100%);
+  color: var(--app-text);
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.2;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 0.6px, transparent 0.6px);
+  background-size: 3px 3px;
+  z-index: -2;
+}
+
+body.theme--premium_lily_garden {
+  --lily-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cg fill='%23fff7fb' fill-opacity='0.92' stroke='%23f9a8d4' stroke-width='2.5'%3E%3Cellipse cx='60' cy='30' rx='13' ry='28'/%3E%3Cellipse cx='60' cy='30' rx='13' ry='28' transform='rotate(72 60 60)'/%3E%3Cellipse cx='60' cy='30' rx='13' ry='28' transform='rotate(144 60 60)'/%3E%3Cellipse cx='60' cy='30' rx='13' ry='28' transform='rotate(216 60 60)'/%3E%3Cellipse cx='60' cy='30' rx='13' ry='28' transform='rotate(288 60 60)'/%3E%3C/g%3E%3Cg stroke='%23f8b4d9' stroke-width='1.8' stroke-linecap='round'%3E%3Cline x1='60' y1='60' x2='60' y2='34'/%3E%3Cline x1='60' y1='60' x2='73' y2='38'/%3E%3Cline x1='60' y1='60' x2='47' y2='38'/%3E%3Cline x1='60' y1='60' x2='80' y2='52'/%3E%3Cline x1='60' y1='60' x2='40' y2='52'/%3E%3Cline x1='60' y1='60' x2='70' y2='78'/%3E%3Cline x1='60' y1='60' x2='50' y2='78'/%3E%3C/g%3E%3Cg fill='%23f59e0b'%3E%3Cellipse cx='60' cy='34' rx='2.2' ry='3.2'/%3E%3Cellipse cx='73' cy='38' rx='2.2' ry='3.2'/%3E%3Cellipse cx='47' cy='38' rx='2.2' ry='3.2'/%3E%3Cellipse cx='80' cy='52' rx='2.2' ry='3.2'/%3E%3Cellipse cx='40' cy='52' rx='2.2' ry='3.2'/%3E%3Cellipse cx='70' cy='78' rx='2.2' ry='3.2'/%3E%3Cellipse cx='50' cy='78' rx='2.2' ry='3.2'/%3E%3C/g%3E%3Ccircle cx='60' cy='60' r='8' fill='%23facc15'/%3E%3C/svg%3E");
+  background:
+    radial-gradient(45rem 28rem at -5% 92%, rgba(236, 72, 153, 0.2), transparent 62%),
+    radial-gradient(32rem 20rem at 102% 8%, rgba(168, 85, 247, 0.3), transparent 60%),
+    linear-gradient(180deg, #161429 0%, #0d0b1c 100%);
+}
+
+body.theme--premium_lily_garden::before {
+  opacity: 0.3;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.14) 0.8px, transparent 0.8px),
+    radial-gradient(rgba(249, 168, 212, 0.12) 1.2px, transparent 1.2px);
+  background-size: 3px 3px, 8px 8px;
+  background-position: 0 0, 1px 2px;
+}
+
+body.theme--premium_lily_garden::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.94;
+  background-image:
+    var(--lily-svg),
+    var(--lily-svg),
+    var(--lily-svg),
+    var(--lily-svg),
+    var(--lily-svg),
+    radial-gradient(42% 36% at 8% 90%, rgba(134, 239, 172, 0.2), transparent 75%),
+    radial-gradient(42% 36% at 96% 88%, rgba(74, 222, 128, 0.2), transparent 72%);
+  background-repeat: no-repeat;
+  background-size: 190px 190px, 140px 140px, 180px 180px, 130px 130px, 160px 160px, cover, cover;
+  background-position: 4% 16%, 15% 76%, 92% 18%, 84% 76%, 52% 9%, 0 0, 0 0;
+  animation: lilyFloat 9s ease-in-out infinite;
+}
+
+@keyframes lilyFloat {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+body.theme--premium_lily_garden .app-surface {
+  border-color: rgba(249, 168, 212, 0.35);
+  background: linear-gradient(155deg, rgba(22, 20, 41, 0.92), rgba(30, 26, 52, 0.9));
+  box-shadow: 0 10px 30px rgba(168, 85, 247, 0.18);
+}
+
+body.theme--premium_lily_garden .app-input {
+  border-color: rgba(249, 168, 212, 0.35);
+  background: rgba(11, 10, 25, 0.64);
+}
+
+body.theme--premium_lily_garden .app-button-primary {
+  background: linear-gradient(135deg, #a855f7, #f9a8d4);
+  color: #fff;
+}
+
+.app-surface {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--app-panel) 90%, transparent), color-mix(in srgb, var(--app-panel-alt) 88%, transparent));
+}
+
+.app-input {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--app-text);
+}
+
+.app-muted {
+  color: var(--app-muted);
+}
+
+.app-button-primary {
+  background: linear-gradient(135deg, var(--app-primary), var(--app-accent));
+  color: #fff;
+}
+
+.scroll-snap-y {
+  scroll-snap-type: y mandatory;
+}
+
+.scroll-snap-child {
+  scroll-snap-align: start;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+
+body.theme--premium_tulip_bloom {
+  --tulip-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 180'%3E%3Cg stroke='%232f855a' stroke-width='6' stroke-linecap='round'%3E%3Cpath d='M60 176 L60 88'/%3E%3Cpath d='M60 124 C46 114 40 102 38 90'/%3E%3Cpath d='M60 136 C76 126 84 112 86 98'/%3E%3C/g%3E%3Cg fill='%23ec4899' stroke='%23be185d' stroke-width='2'%3E%3Cpath d='M60 40 C72 24 86 26 92 44 C96 58 86 72 74 78 L60 84 Z'/%3E%3Cpath d='M60 40 C48 24 34 26 28 44 C24 58 34 72 46 78 L60 84 Z'/%3E%3Cpath d='M60 28 C66 18 72 18 78 26 C84 34 80 52 72 64 L60 84 L48 64 C40 52 36 34 42 26 C48 18 54 18 60 28 Z'/%3E%3C/g%3E%3C/svg%3E");
+  background:
+    radial-gradient(46rem 30rem at -3% 90%, rgba(236, 72, 153, 0.24), transparent 64%),
+    radial-gradient(34rem 22rem at 102% 10%, rgba(245, 158, 11, 0.2), transparent 60%),
+    linear-gradient(180deg, #1a1028 0%, #0f0b1a 100%);
+}
+
+body.theme--premium_tulip_bloom::before {
+  opacity: 0.28;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.14) 0.8px, transparent 0.8px),
+    linear-gradient(120deg, rgba(236, 72, 153, 0.08), rgba(245, 158, 11, 0.05));
+  background-size: 3px 3px, 100% 100%;
+}
+
+body.theme--premium_tulip_bloom::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.95;
+  background-image:
+    var(--tulip-svg),
+    var(--tulip-svg),
+    var(--tulip-svg),
+    var(--tulip-svg),
+    var(--tulip-svg),
+    var(--tulip-svg),
+    radial-gradient(55% 45% at 10% 94%, rgba(134, 239, 172, 0.22), transparent 80%),
+    radial-gradient(55% 45% at 94% 92%, rgba(74, 222, 128, 0.2), transparent 80%);
+  background-repeat: no-repeat;
+  background-size: 185px 270px, 140px 205px, 170px 250px, 130px 190px, 150px 220px, 135px 198px, cover, cover;
+  background-position: 6% 82%, 18% 78%, 86% 80%, 93% 76%, 50% 84%, 63% 80%, 0 0, 0 0;
+  animation: tulipSway 7.5s ease-in-out infinite;
+}
+
+@keyframes tulipSway {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0.5deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+body.theme--premium_tulip_bloom .app-surface {
+  border-color: rgba(236, 72, 153, 0.34);
+  background: linear-gradient(155deg, rgba(26, 16, 40, 0.93), rgba(34, 20, 55, 0.9));
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
+}
+
+body.theme--premium_tulip_bloom .app-input {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(12, 8, 23, 0.64);
+}
+
+body.theme--premium_tulip_bloom .app-button-primary {
+  background: linear-gradient(135deg, #ec4899, #f59e0b);
+  color: #fff;
+}
