@@ -21,6 +21,9 @@ export default function AIModePage() {
   const [quiz, setQuiz] = useState([]);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [quizSessionId, setQuizSessionId] = useState("");
+  const [quizResult, setQuizResult] = useState(null);
+  const [pointsNotice, setPointsNotice] = useState("");
 
   const runWithAuth = async (callback) => {
     const {
@@ -40,6 +43,9 @@ export default function AIModePage() {
     setQuiz([]);
     setQuizAnswers({});
     setQuizSubmitted(false);
+    setQuizSessionId("");
+    setQuizResult(null);
+    setPointsNotice("");
 
     try {
       await runWithAuth(async (token) => {
@@ -85,6 +91,8 @@ export default function AIModePage() {
     setQuiz([]);
     setQuizAnswers({});
     setQuizSubmitted(false);
+    setQuizSessionId("");
+    setQuizResult(null);
     try {
       await runWithAuth(async (token) => {
         const response = await apiClient.post(
@@ -93,6 +101,9 @@ export default function AIModePage() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setFlashcards(response.data?.flashcards || []);
+        if (typeof response.data?.pointsAwarded === "number") {
+          setPointsNotice(`+${response.data.pointsAwarded} points for generating flashcards.`);
+        }
         if (Array.isArray(response.data?.enrichmentQueries) && response.data.enrichmentQueries.length) {
           setEnrichmentQueries(response.data.enrichmentQueries);
         }
@@ -118,9 +129,11 @@ export default function AIModePage() {
           { flashcards },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        setQuizSessionId(response.data?.quizSessionId || "");
         setQuiz(response.data?.quiz || []);
         setQuizAnswers({});
         setQuizSubmitted(false);
+        setQuizResult(null);
       });
     } catch (requestError) {
       setError(requestError?.response?.data?.error || requestError.message || "Failed to create quiz.");
@@ -132,12 +145,8 @@ export default function AIModePage() {
   const searchText = useMemo(() => keywords.slice(0, 1)[0] || "", [keywords]);
   const hasGenerationText = Boolean((sourceText || noteText).trim());
   const quizScore = useMemo(() => {
-    if (!quizSubmitted || !quiz.length) return 0;
-    return quiz.reduce((score, item) => {
-      const selected = quizAnswers[item.id];
-      return score + (selected === item.answerIndex ? 1 : 0);
-    }, 0);
-  }, [quiz, quizAnswers, quizSubmitted]);
+    return quizResult?.score ?? 0;
+  }, [quizResult]);
 
   const handleSelectAnswer = (questionId, answerIndex) => {
     if (quizSubmitted) return;
@@ -146,13 +155,45 @@ export default function AIModePage() {
 
   const handleSubmitQuiz = () => {
     if (!quiz.length) return;
+    if (!quizSessionId) {
+      setError("Quiz session expired. Generate a new quiz.");
+      return;
+    }
     const answeredCount = Object.keys(quizAnswers).length;
     if (answeredCount < quiz.length) {
       setError("Answer all quiz questions before submitting.");
       return;
     }
+    setLoading(true);
     setError("");
-    setQuizSubmitted(true);
+    runWithAuth(async (token) => {
+      const response = await apiClient.post(
+        "/ai/quiz/submit",
+        { quizSessionId, answers: quizAnswers },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const gradedQuiz = response.data?.gradedQuiz || [];
+      setQuiz(gradedQuiz);
+      const syncedAnswers = {};
+      gradedQuiz.forEach((item) => {
+        if (Number.isInteger(item.selectedIndex)) syncedAnswers[item.id] = item.selectedIndex;
+      });
+      setQuizAnswers(syncedAnswers);
+      setQuizSubmitted(true);
+      setQuizResult({
+        score: response.data?.score || 0,
+        total: response.data?.total || gradedQuiz.length,
+        pointsAwarded: response.data?.pointsAwarded || 0,
+      });
+      setPointsNotice(`+${response.data?.pointsAwarded || 0} points from quiz score.`);
+    })
+      .catch((requestError) => {
+        setError(requestError?.response?.data?.error || requestError.message || "Failed to submit quiz.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -214,6 +255,11 @@ export default function AIModePage() {
           </div>
         </div>
         {error ? <p className="mt-2 text-sm text-rose-400">{error}</p> : null}
+        {pointsNotice ? (
+          <p className="mt-2 text-sm" style={{ color: "var(--app-accent)" }}>
+            {pointsNotice}
+          </p>
+        ) : null}
       </div>
 
       <div className="app-surface rounded-2xl p-5">
@@ -298,7 +344,7 @@ export default function AIModePage() {
               <p className="text-sm text-white/85">
                 Score:{" "}
                 <span style={{ color: "var(--app-accent)" }}>
-                  {quizScore}/{quiz.length}
+                  {quizScore}/{quizResult?.total || quiz.length}
                 </span>
               </p>
             )}
@@ -321,7 +367,7 @@ export default function AIModePage() {
                           quizSubmitted
                             ? choiceIndex === item.answerIndex
                               ? { borderColor: "#22C55E", backgroundColor: "rgba(34,197,94,0.16)" }
-                              : quizAnswers[item.id] === choiceIndex
+                                : quizAnswers[item.id] === choiceIndex
                                 ? { borderColor: "#DC2626", backgroundColor: "rgba(220,38,38,0.16)" }
                                 : undefined
                             : quizAnswers[item.id] === choiceIndex

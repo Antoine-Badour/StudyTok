@@ -4,6 +4,7 @@ import { requireUser } from "../middleware/authMiddleware.js";
 import { deleteFileByUrl, uploadBuffer } from "../services/backblazeService.js";
 import { supabaseAdmin } from "../config/supabaseAdmin.js";
 import { enforceUploadLimit, getUploadQuotaSummary } from "../services/uploadLimitsService.js";
+import { awardPoints } from "../services/pointsService.js";
 
 const router = Router();
 const upload = multer({
@@ -91,6 +92,13 @@ router.post(
       if (error) {
         throw new Error(error.message);
       }
+
+      await awardPoints({
+        userId: req.user.id,
+        points: 12,
+        reason: "upload_created",
+        metadata: { video_id: data.id, media_type: isImage ? "image" : "video" },
+      });
 
       return res.status(201).json({ video: data });
     } catch (error) {
