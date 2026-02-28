@@ -5,6 +5,22 @@ import { apiClient } from "../lib/apiClient";
 const AuthContext = createContext(null);
 const ADMIN_EMAILS = new Set(["antoine.badour@gmail.com"]);
 
+function toReadableErrorMessage(error, fallback = "Request failed.") {
+  const fromResponse = error?.response?.data?.error ?? error?.response?.data;
+  const candidate = fromResponse ?? error?.message ?? error;
+
+  if (typeof candidate === "string" && candidate.trim()) return candidate;
+  if (candidate && typeof candidate === "object") {
+    if (typeof candidate.message === "string" && candidate.message.trim()) return candidate.message;
+    try {
+      return JSON.stringify(candidate);
+    } catch {
+      return fallback;
+    }
+  }
+  return fallback;
+}
+
 function twoFAStorageKey(userId) {
   return `twofa_verified_${userId}`;
 }
@@ -149,7 +165,7 @@ export function AuthProvider({ children }) {
         avatarUrl,
       });
     } catch (error) {
-      throw new Error(error?.response?.data?.error || error.message || "Signup failed.");
+      throw new Error(toReadableErrorMessage(error, "Signup failed."));
     }
 
     const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
@@ -194,18 +210,22 @@ export function AuthProvider({ children }) {
       throw new Error("No active session found.");
     }
 
-    await apiClient.post(
-      "/auth/verify-2fa",
-      {
-        email: session.user.email,
-        code,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
+    try {
+      await apiClient.post(
+        "/auth/verify-2fa",
+        {
+          email: session.user.email,
+          code,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw new Error(toReadableErrorMessage(error, "Failed to verify code."));
+    }
 
     localStorage.setItem(twoFAStorageKey(session.user.id), "true");
     setIsTwoFactorVerified(true);
