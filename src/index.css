@@ -239,30 +239,24 @@ body.theme--premium_for_tilly::after {
   inset: 0;
   pointer-events: none;
   z-index: -1;
-  opacity: 0.9;
+  opacity: 0.95;
   background-image:
-    radial-gradient(circle at 8% 14%, rgba(220, 38, 38, 0.9) 0 14px, transparent 15px),
-    radial-gradient(circle at 16% 18%, rgba(220, 38, 38, 0.82) 0 10px, transparent 11px),
-    radial-gradient(circle at 90% 20%, rgba(220, 38, 38, 0.88) 0 13px, transparent 14px),
-    radial-gradient(circle at 84% 78%, rgba(220, 38, 38, 0.86) 0 12px, transparent 13px),
-    radial-gradient(circle at 12% 80%, rgba(220, 38, 38, 0.78) 0 10px, transparent 11px),
-    radial-gradient(circle at 50% 12%, rgba(220, 38, 38, 0.76) 0 10px, transparent 11px),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='500' viewBox='0 0 900 500'%3E%3Cg fill='%23fca5a5' fill-opacity='0.46' font-family='Trebuchet MS, Arial, sans-serif' font-size='28' font-weight='700'%3E%3Ctext x='50' y='70'%3EI love you%3C/text%3E%3Ctext x='330' y='130'%3EI love you%3C/text%3E%3Ctext x='660' y='85'%3EI love you%3C/text%3E%3Ctext x='130' y='250'%3EI love you%3C/text%3E%3Ctext x='500' y='260'%3EI love you%3C/text%3E%3Ctext x='760' y='220'%3EI love you%3C/text%3E%3Ctext x='80' y='430'%3EI love you%3C/text%3E%3Ctext x='390' y='410'%3EI love you%3C/text%3E%3Ctext x='690' y='440'%3EI love you%3C/text%3E%3C/g%3E%3C/svg%3E");
-  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat;
-  background-size: 46px 46px, 34px 34px, 40px 40px, 38px 38px, 34px 34px, 33px 33px, 900px 500px;
-  background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, center;
-  animation: tillyFloat 8s ease-in-out infinite;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='700' viewBox='0 0 1200 700'%3E%3Crect width='1200' height='700' fill='none'/%3E%3Cg font-family='Trebuchet MS, Arial, sans-serif' font-weight='700'%3E%3Ctext x='70' y='110' fill='%23ef4444' fill-opacity='0.9' font-size='44' transform='rotate(-12 70 110)'%3E%E2%9D%A4%3C/text%3E%3Ctext x='250' y='170' fill='%23f87171' fill-opacity='0.88' font-size='48' transform='rotate(16 250 170)'%3E%E2%9D%A4%3C/text%3E%3Ctext x='990' y='120' fill='%23dc2626' fill-opacity='0.9' font-size='52' transform='rotate(-18 990 120)'%3E%E2%9D%A4%3C/text%3E%3Ctext x='1040' y='290' fill='%23ef4444' fill-opacity='0.84' font-size='40' transform='rotate(10 1040 290)'%3E%E2%9D%A4%3C/text%3E%3Ctext x='120' y='580' fill='%23dc2626' fill-opacity='0.84' font-size='46' transform='rotate(14 120 580)'%3E%E2%9D%A4%3C/text%3E%3Ctext x='540' y='90' fill='%23fca5a5' fill-opacity='0.6' font-size='28' transform='rotate(-10 540 90)'%3EI love you%3C/text%3E%3Ctext x='170' y='260' fill='%23fca5a5' fill-opacity='0.58' font-size='30' transform='rotate(7 170 260)'%3EI love you%3C/text%3E%3Ctext x='430' y='360' fill='%23fca5a5' fill-opacity='0.62' font-size='29' transform='rotate(-8 430 360)'%3EI love you%3C/text%3E%3Ctext x='810' y='230' fill='%23fca5a5' fill-opacity='0.57' font-size='27' transform='rotate(13 810 230)'%3EI love you%3C/text%3E%3Ctext x='860' y='560' fill='%23fca5a5' fill-opacity='0.56' font-size='31' transform='rotate(-14 860 560)'%3EI love you%3C/text%3E%3Ctext x='300' y='640' fill='%23fca5a5' fill-opacity='0.52' font-size='26' transform='rotate(11 300 640)'%3EI love you%3C/text%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 1200px 700px;
+  background-position: center;
+  animation: tillyFloat 7s ease-in-out infinite;
 }
 
 @keyframes tillyFloat {
   0% {
-    transform: translateY(0px);
+    transform: translateY(0px) rotate(0deg);
   }
   50% {
-    transform: translateY(-6px);
+    transform: translateY(-6px) rotate(0.4deg);
   }
   100% {
-    transform: translateY(0px);
+    transform: translateY(0px) rotate(0deg);
   }
 }
 
