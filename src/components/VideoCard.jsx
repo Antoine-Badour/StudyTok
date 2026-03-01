@@ -1,7 +1,7 @@
 import ActionSidebar from "./ActionSidebar";
 import VideoOverlay from "./VideoOverlay";
 import { useInView } from "react-intersection-observer";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 function normalizeBackblazePublicUrl(url) {
   if (!url) return url;
@@ -23,6 +23,19 @@ function normalizeBackblazePublicUrl(url) {
   return url;
 }
 
+function buildUrlCandidates(url) {
+  if (!url) return [];
+  const normalized = normalizeBackblazePublicUrl(url);
+  const variants = [
+    normalized,
+    url,
+    decodeURIComponent(normalized || ""),
+    decodeURIComponent(url || ""),
+  ].filter(Boolean);
+
+  return [...new Set(variants)];
+}
+
 function isImageUrl(url) {
   if (!url) return false;
 
@@ -40,10 +53,20 @@ export default function VideoCard({ video }) {
   const [commentsCount] = useState(video.comments_count || 0);
   const videoRef = useRef(null);
   const { ref, inView } = useInView({ threshold: 0.75 });
-  const mediaUrl = normalizeBackblazePublicUrl(video.video_url);
-  const thumbnailUrl = normalizeBackblazePublicUrl(video.thumbnail_url);
+  const mediaUrlCandidates = useMemo(() => buildUrlCandidates(video.video_url), [video.video_url]);
+  const thumbnailUrlCandidates = useMemo(() => buildUrlCandidates(video.thumbnail_url), [video.thumbnail_url]);
+  const [mediaUrlIndex, setMediaUrlIndex] = useState(0);
+  const [thumbnailUrlIndex, setThumbnailUrlIndex] = useState(0);
+  const mediaUrl = mediaUrlCandidates[mediaUrlIndex] || "";
+  const thumbnailUrl = thumbnailUrlCandidates[thumbnailUrlIndex] || "";
   const isImagePost = isImageUrl(mediaUrl);
   const [mediaError, setMediaError] = useState(false);
+
+  useEffect(() => {
+    setMediaUrlIndex(0);
+    setThumbnailUrlIndex(0);
+    setMediaError(false);
+  }, [video?.id, video?.video_url, video?.thumbnail_url]);
 
   useEffect(() => {
     if (isImagePost) return;
@@ -58,6 +81,22 @@ export default function VideoCard({ video }) {
     }
   }, [inView, isImagePost]);
 
+  const advanceMediaCandidate = () => {
+    if (mediaUrlIndex < mediaUrlCandidates.length - 1) {
+      setMediaUrlIndex((prev) => prev + 1);
+      setMediaError(false);
+      return;
+    }
+    setMediaError(true);
+  };
+
+  const advanceThumbnailCandidate = () => {
+    if (thumbnailUrlIndex < thumbnailUrlCandidates.length - 1) {
+      setThumbnailUrlIndex((prev) => prev + 1);
+      return;
+    }
+  };
+
   return (
     <article ref={ref} className="relative h-full w-full overflow-hidden rounded-2xl bg-black">
       {isImagePost ? (
@@ -65,7 +104,7 @@ export default function VideoCard({ video }) {
           src={mediaUrl}
           alt={video.title}
           className="h-full w-full object-cover"
-          onError={() => setMediaError(true)}
+          onError={advanceMediaCandidate}
           onLoad={() => setMediaError(false)}
         />
       ) : (
@@ -80,7 +119,7 @@ export default function VideoCard({ video }) {
               muted
               playsInline
               controls={false}
-              onError={() => setMediaError(true)}
+              onError={advanceMediaCandidate}
               onLoadedData={() => setMediaError(false)}
             />
           ) : (
@@ -88,6 +127,7 @@ export default function VideoCard({ video }) {
               src={thumbnailUrl || "https://placehold.co/720x1280?text=Media"}
               alt={video.title}
               className="h-full w-full object-cover"
+              onError={advanceThumbnailCandidate}
             />
           )}
         </>
