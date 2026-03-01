@@ -3,6 +3,26 @@ import VideoOverlay from "./VideoOverlay";
 import { useInView } from "react-intersection-observer";
 import { useEffect, useRef, useState } from "react";
 
+function normalizeBackblazePublicUrl(url) {
+  if (!url) return url;
+  try {
+    const parsed = new URL(url);
+    if (!/backblazeb2\.com$/i.test(parsed.hostname)) return url;
+
+    if (parsed.hostname.startsWith("s3.")) {
+      const parts = parsed.pathname.split("/").filter(Boolean);
+      if (parts.length >= 2) {
+        const [bucket, ...fileParts] = parts;
+        const filePath = fileParts.join("/");
+        return `https://f000.backblazeb2.com/file/${bucket}/${filePath}`;
+      }
+    }
+  } catch {
+    return url;
+  }
+  return url;
+}
+
 function isImageUrl(url) {
   if (!url) return false;
 
@@ -20,7 +40,9 @@ export default function VideoCard({ video }) {
   const [commentsCount] = useState(video.comments_count || 0);
   const videoRef = useRef(null);
   const { ref, inView } = useInView({ threshold: 0.75 });
-  const isImagePost = isImageUrl(video.video_url);
+  const mediaUrl = normalizeBackblazePublicUrl(video.video_url);
+  const thumbnailUrl = normalizeBackblazePublicUrl(video.thumbnail_url);
+  const isImagePost = isImageUrl(mediaUrl);
   const [mediaError, setMediaError] = useState(false);
 
   useEffect(() => {
@@ -40,30 +62,40 @@ export default function VideoCard({ video }) {
     <article ref={ref} className="relative h-full w-full overflow-hidden rounded-2xl bg-black">
       {isImagePost ? (
         <img
-          src={video.video_url}
+          src={mediaUrl}
           alt={video.title}
           className="h-full w-full object-cover"
           onError={() => setMediaError(true)}
           onLoad={() => setMediaError(false)}
         />
       ) : (
-        <video
-          ref={videoRef}
-          src={video.video_url}
-          poster={video.thumbnail_url}
-          className="h-full w-full object-cover"
-          loop
-          muted
-          playsInline
-          controls={false}
-          onError={() => setMediaError(true)}
-          onLoadedData={() => setMediaError(false)}
-        />
+        <>
+          {!mediaError ? (
+            <video
+              ref={videoRef}
+              src={mediaUrl}
+              poster={thumbnailUrl}
+              className="h-full w-full object-cover"
+              loop
+              muted
+              playsInline
+              controls={false}
+              onError={() => setMediaError(true)}
+              onLoadedData={() => setMediaError(false)}
+            />
+          ) : (
+            <img
+              src={thumbnailUrl || "https://placehold.co/720x1280?text=Media"}
+              alt={video.title}
+              className="h-full w-full object-cover"
+            />
+          )}
+        </>
       )}
 
       {mediaError ? (
-        <div className="absolute inset-0 grid place-items-center bg-black/85 px-6 text-center text-sm text-white/80">
-          Media failed to load. Re-upload as MP4/WEBM/OGG (video) or JPG/PNG/WEBP/GIF (image).
+        <div className="absolute inset-x-0 bottom-0 bg-black/70 px-4 py-3 text-center text-xs text-white/85">
+          Media URL failed. Showing thumbnail fallback. Re-upload as MP4 (H.264) or JPG/PNG/WEBP/GIF.
         </div>
       ) : null}
 

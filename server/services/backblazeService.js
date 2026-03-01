@@ -8,9 +8,27 @@ const applicationKey = process.env.B2_APPLICATION_KEY || process.env.B2_APP_KEY;
 const bucketId = process.env.B2_BUCKET_ID;
 const bucketName = process.env.B2_BUCKET_NAME;
 const endpoint = process.env.B2_ENDPOINT;
-const publicBaseUrl =
-  process.env.B2_PUBLIC_BASE_URL ||
-  (endpoint && bucketName ? `${endpoint.replace(/\/$/, "")}/${bucketName}` : null);
+
+function derivePublicBaseUrl() {
+  if (process.env.B2_PUBLIC_BASE_URL) {
+    return process.env.B2_PUBLIC_BASE_URL.replace(/\/$/, "");
+  }
+
+  if (!bucketName) return null;
+
+  // Preferred and stable public URL format for Backblaze B2 buckets.
+  if (endpoint && /backblazeb2\.com/i.test(endpoint)) {
+    return `https://f000.backblazeb2.com/file/${bucketName}`;
+  }
+
+  if (endpoint) {
+    return `${endpoint.replace(/\/$/, "")}/${bucketName}`;
+  }
+
+  return `https://f000.backblazeb2.com/file/${bucketName}`;
+}
+
+const publicBaseUrl = derivePublicBaseUrl();
 
 if (!keyId || !applicationKey || !bucketId || !publicBaseUrl) {
   throw new Error(
@@ -66,7 +84,7 @@ export async function uploadBuffer({ buffer, filename, contentType }) {
     mime: contentType,
   });
 
-  return `${publicBaseUrl}/${safeName}`;
+  return `${publicBaseUrl}/${encodeURIComponent(safeName)}`;
 }
 
 export async function deleteFileByUrl(fileUrl) {
