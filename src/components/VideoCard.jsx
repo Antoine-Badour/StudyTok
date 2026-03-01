@@ -1,7 +1,10 @@
 import ActionSidebar from "./ActionSidebar";
 import VideoOverlay from "./VideoOverlay";
+import CommentsPanel from "./CommentsPanel";
 import { useInView } from "react-intersection-observer";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { apiClient } from "../lib/apiClient";
+import { supabase } from "../lib/supabaseClient";
 
 function normalizeBackblazePublicUrl(url) {
   if (!url) return url;
@@ -36,6 +39,19 @@ function buildUrlCandidates(url) {
   return [...new Set(variants)];
 }
 
+function toMediaProxyUrl(url) {
+  if (!url) return url;
+  try {
+    const parsed = new URL(url);
+    if (/backblazeb2\.com$/i.test(parsed.hostname)) {
+      return `/api/videos/media?source=${encodeURIComponent(url)}`;
+    }
+  } catch {
+    return url;
+  }
+  return url;
+}
+
 function isImageUrl(url) {
   if (!url) return false;
 
@@ -50,7 +66,7 @@ function isImageUrl(url) {
 export default function VideoCard({ video }) {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(video.likes_count || 0);
-  const [commentsCount] = useState(video.comments_count || 0);
+  const [commentsCount, setCommentsCount] = useState(video.comments_count || 0);
   const videoRef = useRef(null);
   const { ref, inView } = useInView({ threshold: 0.75 });
   const mediaUrlCandidates = useMemo(() => buildUrlCandidates(video.video_url), [video.video_url]);
@@ -59,8 +75,15 @@ export default function VideoCard({ video }) {
   const [thumbnailUrlIndex, setThumbnailUrlIndex] = useState(0);
   const mediaUrl = mediaUrlCandidates[mediaUrlIndex] || "";
   const thumbnailUrl = thumbnailUrlCandidates[thumbnailUrlIndex] || "";
+  const mediaSrc = toMediaProxyUrl(mediaUrl);
+  const thumbnailSrc = toMediaProxyUrl(thumbnailUrl);
   const isImagePost = isImageUrl(mediaUrl);
   const [mediaError, setMediaError] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentsSubmitting, setCommentsSubmitting] = useState(false);
+  const [commentsError, setCommentsError] = useState("");
 
   useEffect(() => {
     setMediaUrlIndex(0);
@@ -81,6 +104,21 @@ export default function VideoCard({ video }) {
     }
   }, [inView, isImagePost]);
 
+  const loadComments = async () => {
+    setCommentsLoading(true);
+    setCommentsError("");
+    try {
+      const response = await apiClient.get(`/comments/${video.id}`);
+      const items = response.data?.comments || [];
+      setComments(items);
+      setCommentsCount(items.length);
+    } catch (error) {
+      setCommentsError(error?.response?.data?.error || error.message || "Failed to load comments.");
+    } finally {
+      setCommentsLoading(false);
+    }
+  };
+
   const advanceMediaCandidate = () => {
     if (mediaUrlIndex < mediaUrlCandidates.length - 1) {
       setMediaUrlIndex((prev) => prev + 1);
@@ -97,11 +135,45 @@ export default function VideoCard({ video }) {
     }
   };
 
+  const openComments = () => {
+    setCommentsOpen(true);
+    loadComments();
+  };
+
+  const submitComment = async (text) => {
+    setCommentsSubmitting(true);
+    setCommentsError("");
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const response = await apiClient.post(
+        `/comments/${video.id}`,
+        { text },
+        {
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`,
+          },
+        }
+      );
+      const items = response.data?.comments || [];
+      setComments(items);
+      setCommentsCount(items.length);
+      return true;
+    } catch (error) {
+      setCommentsError(error?.response?.data?.error || error.message || "Failed to post comment.");
+      return false;
+    } finally {
+      setCommentsSubmitting(false);
+    }
+  };
+
   return (
     <article ref={ref} className="relative h-full w-full overflow-hidden rounded-2xl bg-black">
       {isImagePost ? (
         <img
-          src={mediaUrl}
+          src={mediaSrc}
           alt={video.title}
           className="h-full w-full object-cover"
           onError={advanceMediaCandidate}
@@ -112,8 +184,8 @@ export default function VideoCard({ video }) {
           {!mediaError ? (
             <video
               ref={videoRef}
-              src={mediaUrl}
-              poster={thumbnailUrl}
+              src={mediaSrc}
+              poster={thumbnailSrc}
               className="h-full w-full object-cover"
               loop
               muted
@@ -124,7 +196,7 @@ export default function VideoCard({ video }) {
             />
           ) : (
             <img
-              src={thumbnailUrl || "https://placehold.co/720x1280?text=Media"}
+              src={thumbnailSrc || "https://placehold.co/720x1280?text=Media"}
               alt={video.title}
               className="h-full w-full object-cover"
               onError={advanceThumbnailCandidate}
@@ -147,6 +219,17 @@ export default function VideoCard({ video }) {
         likesCount={likesCount}
         setLikesCount={setLikesCount}
         commentsCount={commentsCount}
+        onCommentClick={openComments}
+      />
+
+      <CommentsPanel
+        open={commentsOpen}
+        comments={comments}
+        loading={commentsLoading}
+        error={commentsError}
+        onClose={() => setCommentsOpen(false)}
+        onSubmit={submitComment}
+        submitting={commentsSubmitting}
       />
     </article>
   );

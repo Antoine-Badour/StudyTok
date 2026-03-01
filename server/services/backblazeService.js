@@ -67,6 +67,10 @@ function extractFileNameFromUrl(fileUrl) {
   }
 }
 
+export function parseFileNameFromUrl(fileUrl) {
+  return extractFileNameFromUrl(fileUrl);
+}
+
 export async function uploadBuffer({ buffer, filename, contentType }) {
   await authorize();
 
@@ -106,4 +110,31 @@ export async function deleteFileByUrl(fileUrl) {
     fileName: file.fileName,
     fileId: file.fileId,
   });
+}
+
+export async function downloadFileByName(fileName) {
+  if (!fileName) {
+    throw new Error("Missing fileName.");
+  }
+
+  await authorize();
+
+  const response = await b2.downloadFileByName({
+    bucketName,
+    fileName,
+    responseType: "arraybuffer",
+  });
+
+  const headers = response?.headers || {};
+  const data = response?.data;
+
+  if (!data) {
+    throw new Error("Failed to download media file.");
+  }
+
+  return {
+    data: Buffer.from(data),
+    contentType: headers["content-type"] || headers["Content-Type"] || "application/octet-stream",
+    contentLength: headers["content-length"] || headers["Content-Length"] || undefined,
+  };
 }

@@ -6,6 +6,7 @@ import videoRoutes from "./routes/videoRoutes.js";
 import premiumRoutes from "./routes/premiumRoutes.js";
 import adminLiteRoutes from "./routes/adminLiteRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
 
 export const app = express();
 
@@ -29,9 +30,9 @@ app.use("/videos", videoRoutes);
 app.use("/premium", premiumRoutes);
 app.use("/admin-lite", adminLiteRoutes);
 app.use("/ai", aiRoutes);
+app.use("/comments", commentRoutes);
 
 app.use((error, _req, res, _next) => {
   console.error(error);
   res.status(500).json({ error: "Internal server error" });
 });
-

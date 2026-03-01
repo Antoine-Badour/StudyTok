@@ -1,7 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
 import { requireUser } from "../middleware/authMiddleware.js";
-import { deleteFileByUrl, uploadBuffer } from "../services/backblazeService.js";
+import { deleteFileByUrl, downloadFileByName, parseFileNameFromUrl, uploadBuffer } from "../services/backblazeService.js";
 import { supabaseAdmin } from "../config/supabaseAdmin.js";
 import { enforceUploadLimit, getUploadQuotaSummary } from "../services/uploadLimitsService.js";
 import { awardPoints } from "../services/pointsService.js";
@@ -23,6 +23,30 @@ router.get("/upload-limits", requireUser, async (req, res) => {
     return res.json(quota);
   } catch (error) {
     return res.status(400).json({ error: error.message || "Failed to load upload limits." });
+  }
+});
+
+router.get("/media", async (req, res) => {
+  try {
+    const source = String(req.query?.source || "").trim();
+    if (!source) {
+      return res.status(400).json({ error: "source query is required." });
+    }
+
+    const fileName = parseFileNameFromUrl(source);
+    if (!fileName) {
+      return res.status(400).json({ error: "Invalid media source." });
+    }
+
+    const file = await downloadFileByName(fileName);
+    res.setHeader("Content-Type", file.contentType);
+    if (file.contentLength) {
+      res.setHeader("Content-Length", String(file.contentLength));
+    }
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    return res.send(file.data);
+  } catch (error) {
+    return res.status(404).json({ error: error.message || "Media not found." });
   }
 });
 

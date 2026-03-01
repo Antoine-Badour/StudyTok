@@ -1,4 +1,4 @@
-import { FaCommentDots, FaHeart, FaShare } from "react-icons/fa";
+import { FaCommentDots, FaHeart } from "react-icons/fa";
 import { supabase } from "../lib/supabaseClient";
 import { useAuth } from "../context/AuthContext";
 
@@ -9,6 +9,7 @@ export default function ActionSidebar({
   likesCount,
   setLikesCount,
   commentsCount,
+  onCommentClick,
 }) {
   const { user } = useAuth();
 
@@ -35,19 +36,6 @@ export default function ActionSidebar({
     }
   };
 
-  const handleShare = async () => {
-    if (!navigator.share) {
-      await navigator.clipboard.writeText(video.video_url);
-      return;
-    }
-
-    await navigator.share({
-      title: video.title,
-      text: video.description,
-      url: video.video_url,
-    });
-  };
-
   return (
     <aside className="absolute bottom-20 right-2 flex flex-col items-center gap-3 sm:bottom-24 sm:right-3 sm:gap-5">
       <img
@@ -61,14 +49,9 @@ export default function ActionSidebar({
         <span className="text-xs">{likesCount}</span>
       </button>
 
-      <button className="flex flex-col items-center text-white">
+      <button onClick={onCommentClick} className="flex flex-col items-center text-white">
         <FaCommentDots className="text-2xl sm:text-3xl" />
         <span className="text-xs">{commentsCount}</span>
-      </button>
-
-      <button onClick={handleShare} className="flex flex-col items-center text-white">
-        <FaShare className="text-2xl sm:text-3xl" />
-        <span className="text-xs">Share</span>
       </button>
     </aside>
   );
