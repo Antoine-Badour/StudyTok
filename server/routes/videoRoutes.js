@@ -7,6 +7,9 @@ import { enforceUploadLimit, getUploadQuotaSummary } from "../services/uploadLim
 import { awardPoints } from "../services/pointsService.js";
 
 const router = Router();
+const ALLOWED_IMAGE_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+const ALLOWED_VIDEO_MIME_TYPES = new Set(["video/mp4", "video/webm", "video/ogg"]);
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
@@ -40,8 +43,8 @@ router.post(
         return res.status(400).json({ error: "Missing required upload fields." });
       }
 
-      const isVideo = media.mimetype?.startsWith("video/");
-      const isImage = media.mimetype?.startsWith("image/");
+      const isVideo = ALLOWED_VIDEO_MIME_TYPES.has(media.mimetype || "");
+      const isImage = ALLOWED_IMAGE_MIME_TYPES.has(media.mimetype || "");
 
       if (!isVideo && !isImage) {
         return res.status(400).json({ error: "Invalid media format. Upload a video or image." });
@@ -51,7 +54,7 @@ router.post(
         return res.status(400).json({ error: "Video thumbnail is required." });
       }
 
-      if (thumbnail && !thumbnail.mimetype?.startsWith("image/")) {
+      if (thumbnail && !ALLOWED_IMAGE_MIME_TYPES.has(thumbnail.mimetype || "")) {
         return res.status(400).json({ error: "Invalid thumbnail format." });
       }
 

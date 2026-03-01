@@ -5,6 +5,8 @@ import { supabase } from "../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
 
 const MAX_VIDEO_SIZE_BYTES = 300 * 1024 * 1024;
+const ALLOWED_IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const ALLOWED_VIDEO_MIME_TYPES = ["video/mp4", "video/webm", "video/ogg"];
 const SUBJECT_OPTIONS = [
   { value: "mathematics", label: "Mathematics" },
   { value: "biology", label: "Biology" },
@@ -19,11 +21,11 @@ const SUBJECT_OPTIONS = [
 ];
 
 function isVideoFile(file) {
-  return Boolean(file?.type?.startsWith("video/"));
+  return ALLOWED_VIDEO_MIME_TYPES.includes(file?.type || "");
 }
 
 function isImageFile(file) {
-  return Boolean(file?.type?.startsWith("image/"));
+  return ALLOWED_IMAGE_MIME_TYPES.includes(file?.type || "");
 }
 
 function formatBytes(bytes) {
@@ -144,7 +146,7 @@ export default function UploadModal() {
     }
 
     if (!isVideoFile(file) && !isImageFile(file)) {
-      setError("Please choose a valid video or image file.");
+      setError("Unsupported format. Use JPG/PNG/WEBP/GIF for images or MP4/WEBM/OGG for videos.");
       setMediaFile(null);
       return;
     }
@@ -289,7 +291,7 @@ export default function UploadModal() {
       <input
         type="file"
         required
-        accept="video/*,image/*"
+        accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.webm,.ogg"
         onChange={handleVideoFileChange}
         className="app-input w-full rounded-lg p-3 text-white/85 file:mr-4 file:rounded file:border-0 file:px-3 file:py-1 file:text-white"
         style={{ "--tw-file-bg-opacity": "1" }}

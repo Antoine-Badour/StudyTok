@@ -8,9 +8,9 @@ function isImageUrl(url) {
 
   try {
     const parsed = new URL(url);
-    return /\.(jpg|jpeg|png|gif|webp|avif|bmp|heic)$/i.test(parsed.pathname);
+    return /\.(jpg|jpeg|png|gif|webp|avif|bmp)$/i.test(parsed.pathname);
   } catch {
-    return /\.(jpg|jpeg|png|gif|webp|avif|bmp|heic)$/i.test(url);
+    return /\.(jpg|jpeg|png|gif|webp|avif|bmp)$/i.test(url);
   }
 }
 
@@ -21,6 +21,7 @@ export default function VideoCard({ video }) {
   const videoRef = useRef(null);
   const { ref, inView } = useInView({ threshold: 0.75 });
   const isImagePost = isImageUrl(video.video_url);
+  const [mediaError, setMediaError] = useState(false);
 
   useEffect(() => {
     if (isImagePost) return;
@@ -38,7 +39,13 @@ export default function VideoCard({ video }) {
   return (
     <article ref={ref} className="relative h-full w-full overflow-hidden rounded-2xl bg-black">
       {isImagePost ? (
-        <img src={video.video_url} alt={video.title} className="h-full w-full object-cover" />
+        <img
+          src={video.video_url}
+          alt={video.title}
+          className="h-full w-full object-cover"
+          onError={() => setMediaError(true)}
+          onLoad={() => setMediaError(false)}
+        />
       ) : (
         <video
           ref={videoRef}
@@ -49,8 +56,16 @@ export default function VideoCard({ video }) {
           muted
           playsInline
           controls={false}
+          onError={() => setMediaError(true)}
+          onLoadedData={() => setMediaError(false)}
         />
       )}
+
+      {mediaError ? (
+        <div className="absolute inset-0 grid place-items-center bg-black/85 px-6 text-center text-sm text-white/80">
+          Media failed to load. Re-upload as MP4/WEBM/OGG (video) or JPG/PNG/WEBP/GIF (image).
+        </div>
+      ) : null}
 
       <VideoOverlay video={video} />
       <ActionSidebar
