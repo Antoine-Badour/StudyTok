@@ -275,3 +275,61 @@ body.theme--premium_for_tilly .app-button-primary {
   background: linear-gradient(135deg, #dc2626, #fb7185);
   color: #fff;
 }
+
+body.theme--premium_for_tilly_2 {
+  background:
+    radial-gradient(44rem 30rem at -4% 90%, rgba(244, 114, 182, 0.25), transparent 64%),
+    radial-gradient(34rem 22rem at 102% 8%, rgba(249, 168, 212, 0.23), transparent 62%),
+    linear-gradient(180deg, #1f1327 0%, #140d1b 100%);
+}
+
+body.theme--premium_for_tilly_2::before {
+  opacity: 0.3;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.14) 0.8px, transparent 0.8px),
+    radial-gradient(rgba(244, 114, 182, 0.14) 1.1px, transparent 1.1px);
+  background-size: 3px 3px, 9px 9px;
+  background-position: 0 0, 1px 2px;
+}
+
+body.theme--premium_for_tilly_2::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.96;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='720' viewBox='0 0 1200 720'%3E%3Crect width='1200' height='720' fill='none'/%3E%3Cg font-family='Trebuchet MS, Arial, sans-serif' font-weight='700'%3E%3Ctext x='90' y='120' fill='%23f9a8d4' fill-opacity='0.92' font-size='52' transform='rotate(-12 90 120)'%3E%F0%9F%90%B0%3C/text%3E%3Ctext x='270' y='200' fill='%23f472b6' fill-opacity='0.9' font-size='58' transform='rotate(14 270 200)'%3E%F0%9F%90%B0%3C/text%3E%3Ctext x='520' y='105' fill='%23f9a8d4' fill-opacity='0.88' font-size='48' transform='rotate(-8 520 105)'%3E%F0%9F%90%B0%3C/text%3E%3Ctext x='940' y='150' fill='%23f472b6' fill-opacity='0.94' font-size='56' transform='rotate(10 940 150)'%3E%F0%9F%90%B0%3C/text%3E%3Ctext x='1030' y='340' fill='%23f9a8d4' fill-opacity='0.88' font-size='50' transform='rotate(-16 1030 340)'%3E%F0%9F%90%B0%3C/text%3E%3Ctext x='120' y='560' fill='%23f472b6' fill-opacity='0.92' font-size='60' transform='rotate(12 120 560)'%3E%F0%9F%90%B0%3C/text%3E%3Ctext x='360' y='640' fill='%23f9a8d4' fill-opacity='0.86' font-size='54' transform='rotate(-10 360 640)'%3E%F0%9F%90%B0%3C/text%3E%3Ctext x='760' y='600' fill='%23f472b6' fill-opacity='0.9' font-size='58' transform='rotate(9 760 600)'%3E%F0%9F%90%B0%3C/text%3E%3Ctext x='180' y='84' fill='%23ffe4ef' fill-opacity='0.86' font-size='30' transform='rotate(-9 180 84)'%3EI love you%3C/text%3E%3Ctext x='350' y='290' fill='%23ffd6e8' fill-opacity='0.82' font-size='31' transform='rotate(8 350 290)'%3EI love you%3C/text%3E%3Ctext x='700' y='95' fill='%23ffe4ef' fill-opacity='0.84' font-size='29' transform='rotate(-7 700 95)'%3EI love you%3C/text%3E%3Ctext x='860' y='280' fill='%23ffd6e8' fill-opacity='0.82' font-size='32' transform='rotate(10 860 280)'%3EI love you%3C/text%3E%3Ctext x='80' y='350' fill='%23ffe4ef' fill-opacity='0.8' font-size='28' transform='rotate(-12 80 350)'%3EI love you%3C/text%3E%3Ctext x='520' y='380' fill='%23ffd6e8' fill-opacity='0.84' font-size='33' transform='rotate(6 520 380)'%3EI love you%3C/text%3E%3Ctext x='960' y='440' fill='%23ffe4ef' fill-opacity='0.82' font-size='30' transform='rotate(-11 960 440)'%3EI love you%3C/text%3E%3Ctext x='240' y='520' fill='%23ffd6e8' fill-opacity='0.84' font-size='31' transform='rotate(9 240 520)'%3EI love you%3C/text%3E%3Ctext x='620' y='600' fill='%23ffe4ef' fill-opacity='0.82' font-size='30' transform='rotate(-8 620 600)'%3EI love you%3C/text%3E%3Ctext x='930' y='640' fill='%23ffd6e8' fill-opacity='0.82' font-size='29' transform='rotate(12 930 640)'%3EI love you%3C/text%3E%3Ctext x='600' y='360' fill='%23fff1f7' fill-opacity='0.68' font-size='30' transform='rotate(-7 600 360)'%3EFor Tilly 2%3C/text%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 1200px 720px;
+  background-position: center;
+  animation: tillyBunnyFloat 8s ease-in-out infinite;
+}
+
+@keyframes tillyBunnyFloat {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(0.4deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+body.theme--premium_for_tilly_2 .app-surface {
+  border-color: rgba(244, 114, 182, 0.34);
+  background: linear-gradient(155deg, rgba(31, 19, 39, 0.92), rgba(42, 26, 53, 0.9));
+  box-shadow: 0 10px 30px rgba(244, 114, 182, 0.2);
+}
+
+body.theme--premium_for_tilly_2 .app-input {
+  border-color: rgba(249, 168, 212, 0.35);
+  background: rgba(18, 10, 24, 0.66);
+}
+
+body.theme--premium_for_tilly_2 .app-button-primary {
+  background: linear-gradient(135deg, #f472b6, #f9a8d4);
+  color: #fff;
+}

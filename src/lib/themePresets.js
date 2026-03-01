@@ -204,6 +204,17 @@ export const PREMIUM_THEME_PRESETS = [
     danger: "#DC2626",
   },
   {
+    id: "premium_for_tilly_2",
+    label: "For Tilly 2 (Bunny)",
+    primary: "#F472B6",
+    accent: "#F9A8D4",
+    panel: "#1F1327",
+    panelAlt: "#2A1A35",
+    text: "#FFF7FB",
+    muted: "#F5D0FE",
+    danger: "#DC2626",
+  },
+  {
     id: "premium_6b46c1_d4af37",
     label: "Deep Purple #6B46C1",
     primary: "#6B46C1",
@@ -360,8 +371,14 @@ export const PREMIUM_THEME_PRESETS = [
 ];
 
 export function getThemeOptionsByTier(tier) {
-  if (tier === "semi_premium") return SEMI_PREMIUM_THEME_PRESETS;
-  if (tier === "premium") return [...PREMIUM_THEME_PRESETS, ...SEMI_PREMIUM_THEME_PRESETS];
+  const normalizedTier = String(tier || "")
+    .trim()
+    .toLowerCase()
+    .replace("-", "_")
+    .replace(" ", "_");
+
+  if (normalizedTier === "semi_premium") return SEMI_PREMIUM_THEME_PRESETS;
+  if (normalizedTier === "premium") return [...PREMIUM_THEME_PRESETS, ...SEMI_PREMIUM_THEME_PRESETS];
   return FREE_THEME_PRESETS;
 }
 
