@@ -216,3 +216,68 @@ body.theme--premium_tulip_bloom .app-button-primary {
   background: linear-gradient(135deg, #ec4899, #f59e0b);
   color: #fff;
 }
+
+body.theme--premium_for_tilly {
+  background:
+    radial-gradient(42rem 30rem at -2% 90%, rgba(220, 38, 38, 0.22), transparent 64%),
+    radial-gradient(32rem 22rem at 102% 8%, rgba(251, 113, 133, 0.22), transparent 62%),
+    linear-gradient(180deg, #200a10 0%, #14070c 100%);
+}
+
+body.theme--premium_for_tilly::before {
+  opacity: 0.3;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.12) 0.8px, transparent 0.8px),
+    radial-gradient(rgba(251, 113, 133, 0.16) 1.1px, transparent 1.1px);
+  background-size: 3px 3px, 9px 9px;
+  background-position: 0 0, 1px 2px;
+}
+
+body.theme--premium_for_tilly::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.9;
+  background-image:
+    radial-gradient(circle at 8% 14%, rgba(220, 38, 38, 0.9) 0 14px, transparent 15px),
+    radial-gradient(circle at 16% 18%, rgba(220, 38, 38, 0.82) 0 10px, transparent 11px),
+    radial-gradient(circle at 90% 20%, rgba(220, 38, 38, 0.88) 0 13px, transparent 14px),
+    radial-gradient(circle at 84% 78%, rgba(220, 38, 38, 0.86) 0 12px, transparent 13px),
+    radial-gradient(circle at 12% 80%, rgba(220, 38, 38, 0.78) 0 10px, transparent 11px),
+    radial-gradient(circle at 50% 12%, rgba(220, 38, 38, 0.76) 0 10px, transparent 11px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='500' viewBox='0 0 900 500'%3E%3Cg fill='%23fca5a5' fill-opacity='0.46' font-family='Trebuchet MS, Arial, sans-serif' font-size='28' font-weight='700'%3E%3Ctext x='50' y='70'%3EI love you%3C/text%3E%3Ctext x='330' y='130'%3EI love you%3C/text%3E%3Ctext x='660' y='85'%3EI love you%3C/text%3E%3Ctext x='130' y='250'%3EI love you%3C/text%3E%3Ctext x='500' y='260'%3EI love you%3C/text%3E%3Ctext x='760' y='220'%3EI love you%3C/text%3E%3Ctext x='80' y='430'%3EI love you%3C/text%3E%3Ctext x='390' y='410'%3EI love you%3C/text%3E%3Ctext x='690' y='440'%3EI love you%3C/text%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+  background-size: 46px 46px, 34px 34px, 40px 40px, 38px 38px, 34px 34px, 33px 33px, 900px 500px;
+  background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, center;
+  animation: tillyFloat 8s ease-in-out infinite;
+}
+
+@keyframes tillyFloat {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+body.theme--premium_for_tilly .app-surface {
+  border-color: rgba(248, 113, 113, 0.35);
+  background: linear-gradient(155deg, rgba(32, 10, 16, 0.92), rgba(42, 15, 25, 0.9));
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.2);
+}
+
+body.theme--premium_for_tilly .app-input {
+  border-color: rgba(248, 113, 113, 0.35);
+  background: rgba(20, 8, 13, 0.66);
+}
+
+body.theme--premium_for_tilly .app-button-primary {
+  background: linear-gradient(135deg, #dc2626, #fb7185);
+  color: #fff;
+}

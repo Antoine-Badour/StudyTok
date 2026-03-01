@@ -193,6 +193,17 @@ export const PREMIUM_THEME_PRESETS = [
     danger: "#DC2626",
   },
   {
+    id: "premium_for_tilly",
+    label: "For Tilly",
+    primary: "#DC2626",
+    accent: "#FB7185",
+    panel: "#200A10",
+    panelAlt: "#2A0F19",
+    text: "#FFF7F7",
+    muted: "#FECACA",
+    danger: "#DC2626",
+  },
+  {
     id: "premium_6b46c1_d4af37",
     label: "Deep Purple #6B46C1",
     primary: "#6B46C1",
