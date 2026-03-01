@@ -4,6 +4,14 @@ import { supabaseAdmin } from "../config/supabaseAdmin.js";
 
 const router = Router();
 
+function isMissingColumnError(error) {
+  const message = String(error?.message || "").toLowerCase();
+  return (
+    /column .* does not exist/.test(message) ||
+    (message.includes("could not find") && message.includes("column"))
+  );
+}
+
 async function listComments(videoId) {
   const selectVariants = [
     "id,user_id,content,created_at,profiles:user_id(display_name,username)",
@@ -19,7 +27,7 @@ async function listComments(videoId) {
       .order("created_at", { ascending: false })
       .limit(100);
     if (!result.error) return result.data || [];
-    if (!/column .* does not exist/i.test(result.error.message || "")) {
+    if (!isMissingColumnError(result.error)) {
       throw new Error(result.error.message);
     }
   }
@@ -37,7 +45,7 @@ async function insertComment({ userId, videoId, text }) {
   for (const payload of payloadVariants) {
     const result = await supabaseAdmin.from("comments").insert(payload).select("id").maybeSingle();
     if (!result.error) return true;
-    if (!/column .* does not exist/i.test(result.error.message || "")) {
+    if (!isMissingColumnError(result.error)) {
       throw new Error(result.error.message);
     }
   }
