@@ -102,7 +102,74 @@ export default function SettingsPage() {
     <section className="mx-auto max-w-5xl p-4">
       <div className="app-surface rounded-2xl p-6">
         <h1 className="text-2xl font-semibold text-white">Settings</h1>
-        <p className="mt-2 text-sm text-white/70">Choose your profile theme.</p>
+        <p className="mt-2 text-sm text-white/70">Manage your account and profile theme.</p>
+
+        <div className="mt-8 grid gap-4 lg:grid-cols-2">
+          <form onSubmit={handleUpdateName} className="rounded-xl border border-white/10 bg-black/20 p-4">
+            <h2 className="text-lg font-semibold text-white">Change Name</h2>
+            <p className="mt-1 text-xs text-white/70">This updates your public display name.</p>
+            <input
+              type="text"
+              value={displayName}
+              onChange={(event) => setDisplayName(event.target.value)}
+              className="app-input mt-3 w-full rounded-lg p-3"
+              placeholder="Your name"
+              maxLength={40}
+            />
+            {nameError ? <p className="mt-2 text-sm text-rose-400">{nameError}</p> : null}
+            {nameSuccess ? (
+              <p className="mt-2 text-sm" style={{ color: "var(--app-accent)" }}>
+                {nameSuccess}
+              </p>
+            ) : null}
+            <button
+              type="submit"
+              disabled={savingName}
+              className="app-button-primary mt-3 rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-60"
+            >
+              {savingName ? "Saving..." : "Save Name"}
+            </button>
+          </form>
+
+          <form onSubmit={handleUpdatePassword} className="rounded-xl border border-white/10 bg-black/20 p-4">
+            <h2 className="text-lg font-semibold text-white">Change Password</h2>
+            <p className="mt-1 text-xs text-white/70">Enter your old password to verify your account.</p>
+            <input
+              type="password"
+              value={oldPassword}
+              onChange={(event) => setOldPassword(event.target.value)}
+              className="app-input mt-3 w-full rounded-lg p-3"
+              placeholder="Old password"
+            />
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.target.value)}
+              className="app-input mt-2 w-full rounded-lg p-3"
+              placeholder="New password"
+            />
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+              className="app-input mt-2 w-full rounded-lg p-3"
+              placeholder="Confirm new password"
+            />
+            {passwordError ? <p className="mt-2 text-sm text-rose-400">{passwordError}</p> : null}
+            {passwordSuccess ? (
+              <p className="mt-2 text-sm" style={{ color: "var(--app-accent)" }}>
+                {passwordSuccess}
+              </p>
+            ) : null}
+            <button
+              type="submit"
+              disabled={savingPassword}
+              className="app-button-primary mt-3 rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-60"
+            >
+              {savingPassword ? "Updating..." : "Update Password"}
+            </button>
+          </form>
+        </div>
 
         <div className="mt-5 space-y-3">
           <p className="text-sm font-medium text-white">Profile Theme</p>
@@ -175,73 +242,6 @@ export default function SettingsPage() {
               );
             })}
           </div>
-        </div>
-
-        <div className="mt-8 grid gap-4 lg:grid-cols-2">
-          <form onSubmit={handleUpdateName} className="rounded-xl border border-white/10 bg-black/20 p-4">
-            <h2 className="text-lg font-semibold text-white">Change Name</h2>
-            <p className="mt-1 text-xs text-white/70">This updates your public display name.</p>
-            <input
-              type="text"
-              value={displayName}
-              onChange={(event) => setDisplayName(event.target.value)}
-              className="app-input mt-3 w-full rounded-lg p-3"
-              placeholder="Your name"
-              maxLength={40}
-            />
-            {nameError ? <p className="mt-2 text-sm text-rose-400">{nameError}</p> : null}
-            {nameSuccess ? (
-              <p className="mt-2 text-sm" style={{ color: "var(--app-accent)" }}>
-                {nameSuccess}
-              </p>
-            ) : null}
-            <button
-              type="submit"
-              disabled={savingName}
-              className="app-button-primary mt-3 rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-60"
-            >
-              {savingName ? "Saving..." : "Save Name"}
-            </button>
-          </form>
-
-          <form onSubmit={handleUpdatePassword} className="rounded-xl border border-white/10 bg-black/20 p-4">
-            <h2 className="text-lg font-semibold text-white">Change Password</h2>
-            <p className="mt-1 text-xs text-white/70">Enter your old password to verify your account.</p>
-            <input
-              type="password"
-              value={oldPassword}
-              onChange={(event) => setOldPassword(event.target.value)}
-              className="app-input mt-3 w-full rounded-lg p-3"
-              placeholder="Old password"
-            />
-            <input
-              type="password"
-              value={newPassword}
-              onChange={(event) => setNewPassword(event.target.value)}
-              className="app-input mt-2 w-full rounded-lg p-3"
-              placeholder="New password"
-            />
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              className="app-input mt-2 w-full rounded-lg p-3"
-              placeholder="Confirm new password"
-            />
-            {passwordError ? <p className="mt-2 text-sm text-rose-400">{passwordError}</p> : null}
-            {passwordSuccess ? (
-              <p className="mt-2 text-sm" style={{ color: "var(--app-accent)" }}>
-                {passwordSuccess}
-              </p>
-            ) : null}
-            <button
-              type="submit"
-              disabled={savingPassword}
-              className="app-button-primary mt-3 rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-60"
-            >
-              {savingPassword ? "Updating..." : "Update Password"}
-            </button>
-          </form>
         </div>
       </div>
     </section>
